@@ -1,0 +1,51 @@
+$text-color: #dedede;
+@font-face {
+    font-family: number;
+    src: url(../fonts/advanced-dot-digital-7/advanced_dot_digital-7.ttf);
+}
+
+@font-face {
+    font-family: defaultFont;  
+    src: url(../fonts/worksans/WorkSans-Regular.ttf);
+}
+
+@font-face {
+    font-family: artFont; 
+    src: url(../fonts/eagle-lake/EagleLake-Regular.ttf);
+}
+
+body {
+    font-family: defaultFont;
+    &.simple-page {
+        font-family: artFont;
+        background: url(/images/bg.jpg) no-repeat center 0;
+        text-align: center;
+        color: $text-color;
+        margin-top: 80px;
+        h1 {
+            font-size: 180px;
+            margin: 200px 0 40px 0;
+            font-family: number;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+        h3 {
+            font-size: 24px;
+        }
+        a {
+            text-decoration: none;
+            color: $text-color;
+            &:hover {
+                color: darken($color: $text-color, $amount: 0.5);
+            }
+        }
+        .nav {
+            margin: 30px 15px;
+        }
+        .copyright {
+            font-size: 13px;
+        }
+    }
+}
