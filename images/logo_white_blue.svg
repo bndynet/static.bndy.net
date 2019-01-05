@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 7 7" preserveAspectRatio="xMidYMid meet">
+ <g>
+  <title>background</title>
+  <rect fill="#075ac5" height="7" width="7"></rect>
+ </g>
+ <g>
+  <title>frontgroud</title>
+  <rect x="1" y="2" height="1" width="3" fill="#ffffff"></rect>
+  <rect x="5" y="2" height="3" width="1" fill="#ffffff"></rect>
+  <rect x="3" y="4" height="1" width="3" fill="#ffffff"></rect>
+  <rect x="1" y="4" height="1" width="1" fill="#ffffff"></rect>
+ </g>
+</svg>
