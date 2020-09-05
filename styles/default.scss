@@ -5,12 +5,12 @@ $text-color: #dedede;
 }
 
 @font-face {
-    font-family: defaultFont;  
+    font-family: defaultFont;
     src: url(../fonts/worksans/WorkSans-Regular.ttf);
 }
 
 @font-face {
-    font-family: artFont; 
+    font-family: artFont;
     src: url(../fonts/eagle-lake/EagleLake-Regular.ttf);
 }
 
@@ -18,9 +18,12 @@ body {
     font-family: defaultFont;
     &.simple-page {
         font-family: artFont;
-        background: url(/images/bg.jpg) no-repeat center 0;
+        background-image: url(/images/bg.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: #000000;
         text-align: center;
-        color: $text-color;
+        color: #dedede;
         margin-top: 80px;
         h1 {
             font-size: 180px;
