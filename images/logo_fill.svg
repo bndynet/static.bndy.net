@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" preserveAspectRatio="xMidYMid meet">
+ <g>
+  <title>frontgroud</title>
+  <rect x="0" y="1" height="1" width="3" fill="#DF2025"></rect>
+  <rect x="4" y="1" height="2" width="1" fill="#4BB847"></rect>
+  <rect x="2" y="3" height="1" width="3" fill="#4BB847"></rect>
+  <rect x="0" y="3" height="1" width="1" fill="#347DC2"></rect>
+ </g>
+</svg>
