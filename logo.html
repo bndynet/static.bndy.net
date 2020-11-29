@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>My Logos</title>
+    <style>
+        img {
+            width: 50px;
+            height: 50px;
+        }
+
+        @keyframes rotating {
+            from {
+                transform: rotate(0)
+            }
+
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .rotate {
+            animation: rotating 1s ease-in-out infinite;
+        }
+    </style>
+    <script src="./scripts/mylogo.js"></script>
+</head>
+
+<body>
+    <fieldset>
+        <legend>PNG</legend>
+        <div>
+            <img src="./images/logo.png" />
+            <img src="./images/logo_red.png" />
+            <img src="./images/logo_white.png" style="background: #dedede" />
+            <img src="./images/logo_bg_white.png" />
+
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>SVG</legend>
+        <div>
+            <img src="./images/logo.svg" />
+            <img src="./images/logo_red.svg" />
+            <img src="./images/logo_white.svg" style="background: #dedede;" />
+            <img src="./images/logo_white_blue.svg" />
+            <img src="./images/logo_white_blue_circle.svg" />
+            <img src="./images/logo_fill.svg" />
+        </div>
+    </fieldset>
+
+
+    <fieldset>
+        <legend>Script</legend>
+        <div>
+            <script>
+                document.writeln(mylogo({
+                    size: 50,
+                    background: "#ffffff",
+                    colors: ["#DF2025", "#4BB847", "#347DC2"],
+                }));
+                document.writeln(mylogo({
+                    size: 50,
+                    background: "#ffffff",
+                    colors: "#ff0000",
+                }));
+                document.writeln(mylogo({
+                    size: 50,
+                    background: "#075ac5",
+                    colors: "#ffffff",
+                }));
+                document.writeln(mylogo({
+                    size: 50,
+                    background: "#075ac5",
+                    colors: "#ffffff",
+                    circle: true,
+                }));
+            </script>
+        </div>
+        <div style="display:inline-block;" class="rotate">
+            <script>
+                document.writeln(mylogo({
+                    size: 50,
+                    background: "#075ac5",
+                    colors: "#ffffff",
+                    circle: true,
+                }));
+            </script>
+        </div>
+        <div style="display:inline-block;" class="rotate">
+            <script>
+                document.writeln(mylogo({
+                    size: 50,
+                    colors: ["#ff0000", "#0000ff", "#00ff00"],
+                }));
+            </script>
+        </div>
+    </fieldset>
+
+
+
+
+</body>
+
+</html>
