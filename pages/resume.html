@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>简约个人简历 · Resume</title>
+  <style>
+    :root {
+      --ink: #172638;
+      --muted: #637284;
+      --faint: #8895a2;
+      --accent: #315d73;
+      --line: #dce2e6;
+      --canvas: #eef1f2;
+      --paper: #fff;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); font-family: var(--font); }
+    button { font: inherit; }
+    button:focus-visible, [contenteditable]:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 76px;
+      padding: 14px max(24px, calc((100vw - 1100px) / 2));
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 175px; }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      color: white;
+      background: var(--ink);
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -.07em;
+    }
+    .brand-copy strong { display: block; font-size: 13px; line-height: 1.3; }
+    .brand-copy small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .toolbar-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+    .lang-switch { display: flex; gap: 2px; padding: 3px; margin-right: 8px; background: #f0f3f4; border-radius: 8px; }
+    .lang-switch button { min-width: 53px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); padding: 7px 9px; font-size: 11px; cursor: pointer; }
+    .lang-switch button[aria-pressed="true"] { color: var(--ink); background: #fff; box-shadow: 0 1px 4px #1726381a; font-weight: 700; }
+    .action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 7px 11px;
+      border: 1px solid #d6dee2;
+      border-radius: 7px;
+      color: var(--ink);
+      background: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .action:hover { background: #f6f8f8; border-color: #abbcc5; }
+    .action.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .action.primary:hover { background: #294256; }
+    .action.active { border-color: var(--accent); color: var(--accent); background: #edf4f5; }
+    .action svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+    .helper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      max-width: 794px;
+      margin: 22px auto 13px;
+      padding: 0 2px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+    .helper p { margin: 0; }
+    .save-status { white-space: nowrap; color: var(--accent); font-weight: 600; }
+    .save-status.dirty { color: #a56829; }
+    .canvas { padding: 0 24px 66px; }
+
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 18mm 19mm 16mm;
+      background: var(--paper);
+      box-shadow: 0 14px 48px #27384b1c;
+      font-size: 10.5px;
+      line-height: 1.55;
+    }
+    .identity { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .identity-text { min-width: 0; flex: 1; }
+    .person-name { margin: 0; font-size: 39px; font-weight: 700; letter-spacing: -.055em; line-height: 1.15; }
+    .professional-title { margin: 7px 0 0; color: var(--accent); font-size: 14px; font-weight: 600; letter-spacing: .01em; }
+    .photo-wrap { flex: 0 0 82px; width: 82px; }
+    .portrait, .photo-placeholder { display: block; width: 82px; height: 103px; border-radius: 4px; }
+    .portrait { object-fit: cover; object-position: center; background: #f3f5f6; }
+    .photo-placeholder { border: 1px dashed #b9c8cf; background: #f6f8f8; color: var(--muted); cursor: pointer; text-align: center; }
+    .photo-placeholder:hover { border-color: var(--accent); background: #edf4f5; }
+    .photo-placeholder span { display: block; font-size: 9px; font-weight: 600; }
+    .photo-placeholder .photo-plus { margin: 20px auto 5px; color: var(--accent); font-size: 25px; font-weight: 300; line-height: 1; }
+    .photo-actions { display: flex; justify-content: space-between; gap: 3px; margin-top: 3px; }
+    .photo-actions button { padding: 2px 0; border: 0; background: transparent; color: var(--accent); font-size: 9px; cursor: pointer; }
+    .photo-actions button:last-child { color: #a3514a; }
+    .photo-actions button:hover { text-decoration: underline; }
+    .contact-grid { display: grid; grid-template-columns: 1.45fr 1.05fr 1fr 1.25fr; gap: 13px; margin-top: 25px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .contact-label { display: block; margin-bottom: 4px; color: var(--faint); font-size: 8px; font-weight: 700; letter-spacing: .1em; }
+    .contact-value { display: block; overflow-wrap: anywhere; color: var(--ink); font-size: 10px; line-height: 1.35; text-decoration: none; }
+    a.contact-value:hover { color: var(--accent); text-decoration: underline; }
+    .summary { margin-top: 27px; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; padding-bottom: 9px; border-bottom: 1px solid var(--line); }
+    .section-heading h2 { margin: 0; color: var(--accent); font-size: 10px; font-weight: 750; letter-spacing: .13em; }
+    .summary-text { margin: 0; color: #405064; font-size: 11px; line-height: 1.75; white-space: pre-line; }
+    .resume-content { margin-top: 26px; }
+    .details-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.25fr); gap: 38px; margin-top: 28px; }
+    .details-grid .resume-section + .resume-section { margin-top: 0; }
+    .resume-section + .resume-section { margin-top: 28px; }
+    .entry { position: relative; break-inside: avoid; page-break-inside: avoid; }
+    .entry + .entry { margin-top: 17px; padding-top: 16px; border-top: 1px solid #e9edf0; }
+    .entry-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .entry-title { margin: 0; font-size: 12px; font-weight: 700; line-height: 1.45; }
+    .entry-period { flex: 0 0 auto; color: var(--faint); font-size: 9px; white-space: nowrap; }
+    .entry-subtitle { margin: 3px 0 0; color: var(--accent); font-size: 10.5px; font-weight: 600; }
+    .entry-place { color: var(--muted); font-weight: 400; }
+    .bullet-list { margin: 7px 0 0; padding-left: 16px; color: #48586a; font-size: 10.3px; line-height: 1.62; }
+    .bullet-list li { padding-left: 1px; }
+    .bullet-list li + li { margin-top: 4px; }
+    .bullet-list li::marker { color: #8da6b2; }
+    .project-description { margin: 6px 0 0; color: #48586a; font-size: 10.3px; line-height: 1.65; white-space: pre-line; }
+    .details-grid .entry-title { font-size: 11px; }
+    .details-grid .entry-period { white-space: normal; }
+    .skill-entry + .skill-entry { margin-top: 17px; }
+    .skill-name { margin: 0 0 5px; color: var(--ink); font-size: 10.5px; font-weight: 700; }
+    .skill-items { margin: 0; color: #48586a; font-size: 10.2px; line-height: 1.75; white-space: pre-line; }
+
+    .edit-control { display: none; }
+    .editing .edit-control { display: inline-flex; }
+    .editing [data-field] { border-radius: 3px; box-shadow: inset 0 -1px 0 #a6bdc8; cursor: text; }
+    .editing [data-field]:hover { background: #edf5f7; }
+    .editing [data-field]:focus { background: #edf5f7; box-shadow: inset 0 -2px 0 var(--accent); outline: 0; }
+    .mini-action { align-items: center; gap: 3px; border: 0; background: transparent; padding: 2px 4px; color: var(--accent); font-size: 9px; font-weight: 600; cursor: pointer; }
+    .mini-action:hover { text-decoration: underline; }
+    .mini-action.danger { color: #a3514a; }
+    .item-tools { display: flex; justify-content: flex-end; margin-bottom: 3px; background: #fff; }
+    .bullet-row { position: relative; }
+    .bullet-row .mini-action { margin-left: 4px; vertical-align: baseline; }
+    .section-add { margin-top: 9px; }
+    .editing .entry + .entry { margin-top: 24px; }
+
+    @media (max-width: 850px) {
+      .toolbar { padding: 14px 20px; }
+      .helper { margin-left: 24px; margin-right: 24px; }
+      .sheet { width: min(100%, 210mm); }
+    }
+    @media (max-width: 650px) {
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      .toolbar-actions { justify-content: flex-start; }
+      .helper { align-items: flex-start; flex-direction: column; gap: 5px; margin: 16px 18px 10px; }
+      .canvas { padding: 0 10px 35px; }
+      .sheet { min-height: 0; padding: 32px 25px 38px; }
+      .person-name { font-size: 32px; }
+      .photo-wrap { flex-basis: 72px; width: 72px; }
+      .portrait, .photo-placeholder { width: 72px; height: 90px; }
+      .photo-placeholder .photo-plus { margin-top: 15px; }
+      .contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
+      .details-grid { gap: 20px; }
+      .entry-head { flex-wrap: wrap; gap: 2px 8px; }
+    }
+    @media (max-width: 450px) {
+      .details-grid { display: block; }
+      .details-grid .resume-section + .resume-section { margin-top: 27px; }
+      .toolbar-actions { gap: 6px; }
+      .lang-switch { margin-right: 0; }
+      .action { padding: 7px 8px; }
+    }
+    @page { size: A4; margin: 17mm 19mm; }
+    @media print {
+      html, body { width: auto; background: #fff !important; }
+      .toolbar, .helper, .edit-control { display: none !important; }
+      .canvas { padding: 0; }
+      .sheet { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
+      .editing [data-field] { background: transparent !important; box-shadow: none !important; }
+      .photo-wrap.empty, .photo-actions { display: none !important; }
+      .details-grid { gap: 37px; }
+      .resume-section, .summary { break-inside: auto; }
+      .entry, .skill-entry { break-inside: avoid; page-break-inside: avoid; }
+      a.contact-value { color: var(--ink); text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">R.</span>
+      <span class="brand-copy"><strong id="toolbar-title">个人简历</strong><small id="toolbar-subtitle">单文件 · 双语 · 可编辑</small></span>
+    </div>
+    <div class="toolbar-actions">
+      <div class="lang-switch" role="group" aria-label="Resume language">
+        <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="action" id="edit-button" type="button"></button>
+      <button class="action" id="save-button" type="button"></button>
+      <button class="action" id="download-button" type="button"></button>
+      <button class="action primary" id="pdf-button" type="button"></button>
+    </div>
+  </header>
+
+  <div class="helper" aria-live="polite">
+    <p id="helper-text"></p>
+    <span class="save-status" id="save-status"></span>
+  </div>
+
+  <main class="canvas">
+    <article class="sheet" id="resume" aria-label="Resume preview"></article>
+  </main>
+  <input id="photo-input" type="file" accept="image/*" hidden>
+
+  <script id="resume-data" type="application/json">
+  {
+    "version": 1,
+    "shared": {
+      "email": "alex.chen@example.com",
+      "phone": "+86 138 0000 0000",
+      "website": "alexchen.design"
+    },
+    "locales": {
+      "zh": {
+        "name": "陈一",
+        "title": "产品经理",
+        "location": "上海，中国",
+        "summary": "拥有 7 年数字产品经验，擅长从用户问题出发，定义清晰的产品方向，并与设计和研发团队一起推动落地。关注复杂业务场景中的体验优化和可衡量的业务成果。",
+        "experience": [
+          {
+            "role": "高级产品经理",
+            "company": "远景科技",
+            "period": "2022.04 — 至今",
+            "place": "上海",
+            "bullets": [
+              "负责企业数据平台的产品规划，梳理核心工作流程，推动 3 个主要模块从概念到上线。",
+              "结合用户访谈和行为数据优化新用户引导，关键功能采用率提升 28%。"
+            ]
+          },
+          {
+            "role": "产品经理",
+            "company": "星河互联",
+            "period": "2019.06 — 2022.03",
+            "place": "杭州",
+            "bullets": [
+              "主导协作工具的需求分析与版本迭代，建立从反馈收集到优先级评估的闭环流程。",
+              "与跨职能团队协作交付 12 次主要版本更新，月活跃用户增长 35%。"
+            ]
+          }
+        ],
+        "projects": [
+          {
+            "name": "Atlas 数据工作台",
+            "period": "2023 — 2024",
+            "description": "重新设计数据发现与报表创建流程，统一信息架构和关键交互。项目上线后，常用任务的平均完成时间缩短 22%。"
+          }
+        ],
+        "education": [
+          { "school": "同济大学", "degree": "工业设计 · 学士", "period": "2015 — 2019" }
+        ],
+        "skills": [
+          { "name": "产品能力", "items": "产品策略、用户研究、需求分析、数据分析、路线图规划" },
+          { "name": "协作工具", "items": "Figma、FigJam、Jira、Notion、SQL" },
+          { "name": "语言", "items": "中文（母语）、英语（工作交流）" }
+        ]
+      },
+      "en": {
+        "name": "Alex Chen",
+        "title": "Product Manager",
+        "location": "Shanghai, China",
+        "summary": "Product manager with 7 years of experience turning user needs into clear product direction and measurable outcomes. Skilled at simplifying complex workflows and working with design and engineering teams from discovery through launch.",
+        "experience": [
+          {
+            "role": "Senior Product Manager",
+            "company": "Vision Technology",
+            "period": "Apr 2022 — Present",
+            "place": "Shanghai",
+            "bullets": [
+              "Owned the roadmap for an enterprise data platform and brought three core modules from concept to launch.",
+              "Used interviews and behavior data to improve onboarding, increasing adoption of a key feature by 28%."
+            ]
+          },
+          {
+            "role": "Product Manager",
+            "company": "Galaxy Digital",
+            "period": "Jun 2019 — Mar 2022",
+            "place": "Hangzhou",
+            "bullets": [
+              "Led discovery and iteration for a collaboration product, creating a clear process for feedback and prioritization.",
+              "Partnered with design and engineering on 12 major releases, contributing to 35% growth in monthly active users."
+            ]
+          }
+        ],
+        "projects": [
+          {
+            "name": "Atlas Data Workspace",
+            "period": "2023 — 2024",
+            "description": "Redesigned data discovery and report creation with a unified information architecture. The launch reduced average time to complete common tasks by 22%."
+          }
+        ],
+        "education": [
+          { "school": "Tongji University", "degree": "B.A. in Industrial Design", "period": "2015 — 2019" }
+        ],
+        "skills": [
+          { "name": "Product", "items": "Product strategy, user research, discovery, analytics, roadmapping" },
+          { "name": "Tools", "items": "Figma, FigJam, Jira, Notion, SQL" },
+          { "name": "Languages", "items": "Chinese (native), English (professional)" }
+        ]
+      }
+    }
+  }
+  </script>
+  <script>
+    (() => {
+      'use strict';
+
+      const copy = {
+        zh: {
+          toolbarTitle: '个人简历', toolbarSubtitle: '单文件 · 双语 · 可编辑',
+          edit: '编辑简历', done: '完成编辑', save: '保存', download: '下载 HTML', pdf: '导出 PDF',
+          helper: '当前为示例内容。点击“编辑简历”修改文字，点击照片框上传照片；中英文内容分别编辑。保存到此浏览器，下载 HTML 可留存完整副本。导出 PDF 时请选择“另存为 PDF”。',
+          saved: '已保存', unsaved: '有未保存的修改', unavailable: '本地保存不可用，请下载 HTML 副本', downloaded: '已下载包含当前内容的 HTML',
+          summary: '个人简介', experience: '工作经历', projects: '项目经历', education: '教育背景', skills: '技能与语言',
+          email: '电子邮箱', phone: '电话', location: '所在地', website: '个人网站', add: '添加', delete: '删除', addBullet: '添加要点',
+          addPhoto: '添加照片', changePhoto: '更换', removePhoto: '移除', photoAlt: '个人照片', photoError: '无法读取这张照片，请换一张常见格式的图片。',
+          newExperience: { role: '职位名称', company: '公司名称', period: '2024.01 — 至今', place: '城市', bullets: ['描述你的工作内容和可量化成果。'] },
+          newProject: { name: '项目名称', period: '2024', description: '简述项目目标、你的职责和成果。' },
+          newEducation: { school: '学校名称', degree: '专业 · 学位', period: '2020 — 2024' },
+          newSkill: { name: '技能类别', items: '技能一、技能二、技能三' },
+          newBullet: '描述你的工作内容和可量化成果。',
+          removeConfirm: '确定删除这一项吗？'
+        },
+        en: {
+          toolbarTitle: 'Resume', toolbarSubtitle: 'One file · Bilingual · Editable',
+          edit: 'Edit resume', done: 'Done editing', save: 'Save', download: 'Download HTML', pdf: 'Export PDF',
+          helper: 'This is sample content. Click “Edit resume” to change the text or the photo frame to add a picture. Edit each language separately. Save in this browser or download an HTML copy. For PDF, choose “Save as PDF” in the print dialog.',
+          saved: 'Saved', unsaved: 'Unsaved changes', unavailable: 'Browser storage unavailable; download an HTML copy', downloaded: 'Downloaded HTML with current content',
+          summary: 'PROFILE', experience: 'EXPERIENCE', projects: 'PROJECTS', education: 'EDUCATION', skills: 'SKILLS & LANGUAGES',
+          email: 'EMAIL', phone: 'PHONE', location: 'LOCATION', website: 'WEBSITE', add: 'Add', delete: 'Delete', addBullet: 'Add bullet',
+          addPhoto: 'Add photo', changePhoto: 'Change', removePhoto: 'Remove', photoAlt: 'Portrait', photoError: 'Could not read this image. Please choose another common image format.',
+          newExperience: { role: 'Job title', company: 'Company name', period: 'Jan 2024 — Present', place: 'City', bullets: ['Describe your work and a measurable result.'] },
+          newProject: { name: 'Project name', period: '2024', description: 'Describe the goal, your role, and the outcome.' },
+          newEducation: { school: 'School name', degree: 'Degree · Major', period: '2020 — 2024' },
+          newSkill: { name: 'Skill category', items: 'Skill one, skill two, skill three' },
+          newBullet: 'Describe your work and a measurable result.',
+          removeConfirm: 'Delete this item?'
+        }
+      };
+
+      const embeddedData = JSON.parse(document.getElementById('resume-data').textContent);
+      const storageKey = 'single-file-resume-v1:' + location.pathname;
+      let data = embeddedData;
+      let language = embeddedData.defaultLanguage === 'en' ? 'en' : 'zh';
+      let editing = false;
+      let dirty = false;
+      let storageWorks = true;
+      let statusOverride = '';
+
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed?.data?.locales?.zh && parsed?.data?.locales?.en) {
+            data = parsed.data;
+            language = parsed.language === 'en' ? 'en' : 'zh';
+          }
+        }
+      } catch (_) { storageWorks = false; }
+
+      const resume = document.getElementById('resume');
+      const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+      const getAt = (root, path) => path.split('.').reduce((value, key) => value?.[key], root);
+      const setAt = (root, path, value) => {
+        const keys = path.split('.');
+        const last = keys.pop();
+        const parent = keys.reduce((item, key) => item[key], root);
+        parent[last] = value;
+      };
+      const local = () => data.locales[language];
+      const tr = () => copy[language];
+      const field = (path, scope = 'locale', className = '', tag = 'span', multiline = false) => {
+        const value = getAt(scope === 'shared' ? data.shared : local(), path);
+        return `<${tag} class="${className}" data-field="${escapeHtml(path)}" data-scope="${scope}"${multiline ? ' data-multiline="true"' : ''}${editing ? ' contenteditable="plaintext-only" spellcheck="false"' : ''}>${escapeHtml(value)}</${tag}>`;
+      };
+      const safeWebsite = value => /^https?:\/\//i.test(value) ? value : 'https://' + value;
+      const contact = (label, path, scope, href) => {
+        const value = getAt(scope === 'shared' ? data.shared : local(), path) || '';
+        const content = editing
+          ? field(path, scope, 'contact-value')
+          : href && value
+            ? `<a class="contact-value" href="${escapeHtml(href(value))}" target="_blank" rel="noopener noreferrer">${escapeHtml(value)}</a>`
+            : field(path, scope, 'contact-value');
+        return `<div class="contact"><span class="contact-label">${label}</span>${content}</div>`;
+      };
+      const mini = (action, label, collection, index, bulletIndex) => `<button class="mini-action${action.startsWith('remove') ? ' danger' : ''} edit-control" type="button" data-action="${action}" data-collection="${collection}"${index == null ? '' : ` data-index="${index}"`}${bulletIndex == null ? '' : ` data-bullet="${bulletIndex}"`}>${label}</button>`;
+      const sectionHeading = (label, collection) => `<div class="section-heading"><h2>${label}</h2>${editing && collection ? mini('add', '+ ' + tr().add, collection) : ''}</div>`;
+      const photoMarkup = () => {
+        const photo = typeof data.shared.photo === 'string' && /^data:image\/(?:jpeg|png|webp);base64,/i.test(data.shared.photo) ? data.shared.photo : '';
+        return `<div class="photo-wrap${photo ? '' : ' empty'}">${photo
+          ? `<img class="portrait" src="${escapeHtml(photo)}" alt="${tr().photoAlt}">${editing ? `<div class="photo-actions"><button type="button" data-action="photo-upload">${tr().changePhoto}</button><button type="button" data-action="photo-remove">${tr().removePhoto}</button></div>` : ''}`
+          : `<button class="photo-placeholder" type="button" data-action="photo-upload" aria-label="${tr().addPhoto}"><span class="photo-plus" aria-hidden="true">+</span><span>${tr().addPhoto}</span></button>`}</div>`;
+      };
+      const experience = (item, i) => `
+        <div class="entry">
+          ${editing ? `<div class="item-tools">${mini('remove', tr().delete, 'experience', i)}</div>` : ''}
+          <div class="entry-head">${field(`experience.${i}.role`, 'locale', 'entry-title', 'h3')}${field(`experience.${i}.period`, 'locale', 'entry-period')}</div>
+          <p class="entry-subtitle">${field(`experience.${i}.company`)}<span class="entry-place"> · ${field(`experience.${i}.place`)}</span></p>
+          <ul class="bullet-list">${item.bullets.map((_, j) => `<li class="bullet-row">${field(`experience.${i}.bullets.${j}`)}${editing ? mini('remove-bullet', '×', 'experience', i, j) : ''}</li>`).join('')}</ul>
+          ${editing ? `<div class="section-add">${mini('add-bullet', '+ ' + tr().addBullet, 'experience', i)}</div>` : ''}
+        </div>`;
+      const project = (_, i) => `
+        <div class="entry">
+          ${editing ? `<div class="item-tools">${mini('remove', tr().delete, 'projects', i)}</div>` : ''}
+          <div class="entry-head">${field(`projects.${i}.name`, 'locale', 'entry-title', 'h3')}${field(`projects.${i}.period`, 'locale', 'entry-period')}</div>
+          ${field(`projects.${i}.description`, 'locale', 'project-description', 'p', true)}
+        </div>`;
+      const education = (_, i) => `
+        <div class="entry">
+          ${editing ? `<div class="item-tools">${mini('remove', tr().delete, 'education', i)}</div>` : ''}
+          ${field(`education.${i}.school`, 'locale', 'entry-title', 'h3')}
+          <p class="entry-subtitle">${field(`education.${i}.degree`)}</p>
+          ${field(`education.${i}.period`, 'locale', 'entry-period')}
+        </div>`;
+      const skill = (_, i) => `
+        <div class="skill-entry entry">
+          ${editing ? `<div class="item-tools">${mini('remove', tr().delete, 'skills', i)}</div>` : ''}
+          ${field(`skills.${i}.name`, 'locale', 'skill-name', 'h3')}
+          ${field(`skills.${i}.items`, 'locale', 'skill-items', 'p', true)}
+        </div>`;
+
+      function render() {
+        const t = tr();
+        document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+        document.title = `${local().name || t.toolbarTitle} · ${t.toolbarTitle}`;
+        document.getElementById('toolbar-title').textContent = t.toolbarTitle;
+        document.getElementById('toolbar-subtitle').textContent = t.toolbarSubtitle;
+        document.getElementById('edit-button').textContent = editing ? t.done : t.edit;
+        document.getElementById('edit-button').classList.toggle('active', editing);
+        document.getElementById('edit-button').setAttribute('aria-pressed', String(editing));
+        document.getElementById('save-button').textContent = t.save;
+        document.getElementById('download-button').textContent = t.download;
+        document.getElementById('pdf-button').textContent = t.pdf;
+        document.getElementById('helper-text').textContent = t.helper;
+        document.querySelectorAll('[data-lang]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.lang === language)));
+        resume.classList.toggle('editing', editing);
+        resume.innerHTML = `
+          <header class="resume-header">
+            <div class="identity">
+              <div class="identity-text">
+                ${field('name', 'locale', 'person-name', 'h1')}
+                ${field('title', 'locale', 'professional-title', 'p')}
+              </div>
+              ${photoMarkup()}
+            </div>
+            <div class="contact-grid">
+              ${contact(t.email, 'email', 'shared', value => 'mailto:' + value)}
+              ${contact(t.phone, 'phone', 'shared', value => 'tel:' + value.replace(/[^+\d]/g, ''))}
+              ${contact(t.location, 'location', 'locale')}
+              ${contact(t.website, 'website', 'shared', safeWebsite)}
+            </div>
+          </header>
+          <section class="summary resume-section">${sectionHeading(t.summary)}${field('summary', 'locale', 'summary-text', 'p', true)}</section>
+          <div class="resume-content">
+            <section class="resume-section">${sectionHeading(t.experience, 'experience')}${local().experience.map(experience).join('')}</section>
+            <section class="resume-section">${sectionHeading(t.projects, 'projects')}${local().projects.map(project).join('')}</section>
+            <div class="details-grid">
+              <section class="resume-section">${sectionHeading(t.education, 'education')}${local().education.map(education).join('')}</section>
+              <section class="resume-section">${sectionHeading(t.skills, 'skills')}${local().skills.map(skill).join('')}</section>
+            </div>
+          </div>`;
+        showStatus();
+      }
+
+      function showStatus() {
+        const node = document.getElementById('save-status');
+        node.textContent = statusOverride || (!storageWorks ? tr().unavailable : dirty ? tr().unsaved : tr().saved);
+        node.classList.toggle('dirty', dirty || !storageWorks);
+      }
+
+      function markDirty() {
+        dirty = true;
+        statusOverride = '';
+        showStatus();
+      }
+
+      resume.addEventListener('input', event => {
+        const target = event.target.closest('[data-field]');
+        if (!target) return;
+        let value = target.innerText.replace(/\u00a0/g, ' ').replace(/\r/g, '');
+        value = target.dataset.multiline ? value.replace(/\n{3,}/g, '\n\n').trim() : value.replace(/\s*\n\s*/g, ' ').trim();
+        setAt(target.dataset.scope === 'shared' ? data.shared : local(), target.dataset.field, value);
+        markDirty();
+      });
+
+      resume.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && event.target.matches('[data-field]:not([data-multiline])')) {
+          event.preventDefault();
+          event.target.blur();
+        }
+      });
+
+      resume.addEventListener('click', event => {
+        const button = event.target.closest('[data-action]');
+        if (!button) return;
+        if (button.dataset.action === 'photo-upload') {
+          document.getElementById('photo-input').click();
+          return;
+        }
+        if (button.dataset.action === 'photo-remove') {
+          data.shared.photo = '';
+          markDirty(); render();
+          return;
+        }
+        const collection = button.dataset.collection;
+        const items = local()[collection];
+        const index = Number(button.dataset.index);
+        const bullet = Number(button.dataset.bullet);
+        if (button.dataset.action === 'add') {
+          const template = { experience: tr().newExperience, projects: tr().newProject, education: tr().newEducation, skills: tr().newSkill }[collection];
+          items.push(JSON.parse(JSON.stringify(template)));
+          markDirty(); render();
+          resume.querySelector(`[data-field="${collection}.${items.length - 1}.${{ experience: 'role', projects: 'name', education: 'school', skills: 'name' }[collection]}"]`)?.focus();
+        } else if (button.dataset.action === 'remove') {
+          if (confirm(tr().removeConfirm)) { items.splice(index, 1); markDirty(); render(); }
+        } else if (button.dataset.action === 'add-bullet') {
+          items[index].bullets.push(tr().newBullet);
+          markDirty(); render();
+          resume.querySelector(`[data-field="experience.${index}.bullets.${items[index].bullets.length - 1}"]`)?.focus();
+        } else if (button.dataset.action === 'remove-bullet') {
+          items[index].bullets.splice(bullet, 1);
+          markDirty(); render();
+        }
+      });
+
+      document.getElementById('photo-input').addEventListener('change', async event => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        let url;
+        try {
+          if (!file.type.startsWith('image/')) throw new Error('Not an image');
+          url = URL.createObjectURL(file);
+          const image = new Image();
+          await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+            image.src = url;
+          });
+          const scale = Math.min(1, 640 / Math.max(image.naturalWidth, image.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext('2d');
+          context.fillStyle = '#fff';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          data.shared.photo = canvas.toDataURL('image/jpeg', 0.84);
+          markDirty(); render();
+        } catch (_) {
+          alert(tr().photoError);
+        } finally {
+          if (url) URL.revokeObjectURL(url);
+          event.target.value = '';
+        }
+      });
+
+      document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', () => {
+        if (button.dataset.lang === language) return;
+        language = button.dataset.lang;
+        statusOverride = '';
+        render();
+      }));
+      document.getElementById('edit-button').addEventListener('click', () => { editing = !editing; render(); });
+      function saveToBrowser() {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify({ data, language }));
+          storageWorks = true;
+          dirty = false;
+          statusOverride = '';
+          return true;
+        } catch (_) {
+          storageWorks = false;
+          statusOverride = tr().unavailable;
+          return false;
+        }
+      }
+      document.getElementById('save-button').addEventListener('click', () => {
+        saveToBrowser();
+        showStatus();
+      });
+      document.getElementById('download-button').addEventListener('click', () => {
+        saveToBrowser();
+        const clone = document.documentElement.cloneNode(true);
+        clone.querySelector('#resume-data').textContent = JSON.stringify({ ...data, defaultLanguage: language }).replace(/</g, '\\u003c');
+        const html = '<!doctype html>\n' + clone.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'resume.html';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        statusOverride = tr().downloaded;
+        showStatus();
+      });
+      document.getElementById('pdf-button').addEventListener('click', () => { render(); window.print(); });
+      window.addEventListener('beforeunload', event => {
+        if (!dirty) return;
+        event.preventDefault();
+        event.returnValue = '';
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
